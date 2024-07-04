@@ -415,6 +415,22 @@ print_insn_args (const char *oparg, insn_t l, bfd_vma pc, disassemble_info *info
 	    }
 	  break;
 
+	case 'G': /* CX */ // FIXME
+	  switch (*++oparg)
+	    {
+	    case 'x':
+	      print (info->stream, dis_style_immediate, "%d",
+		     (int)EXTRACT_CX_RTYPE_CFID (l));
+	      break;
+	    case 'y':
+	      print (info->stream, dis_style_immediate, "%d",
+		     (int)EXTRACT_CX_ITYPE_CFID (l));
+	      break;
+	    case 'j':
+	      print (info->stream, dis_style_immediate, "%d",
+		     (int)EXTRACT_CX_ITYPE_IMM (l));
+	      break;
+	    } /* end CX */
 	case ',':
 	case '(':
 	case ')':

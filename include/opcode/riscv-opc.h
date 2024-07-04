@@ -21,6 +21,14 @@
 #ifndef RISCV_ENCODING_H
 #define RISCV_ENCODING_H
 /* Instruction opcode macros.  */
+
+/************ CX ************/
+#define MATCH_CX_IMM 0x2b
+#define MASK_CX_IMM 0x707f
+#define MATCH_CX_REG 0xb
+#define MASK_CX_REG 0x7f
+/*****************************/
+
 #define MATCH_SLLI_RV32 0x1013
 #define MASK_SLLI_RV32  0xfe00707f
 #define MATCH_SRLI_RV32 0x5013
@@ -3475,6 +3483,10 @@
 #define CSR_VLENB 0xc22
 #endif /* RISCV_ENCODING_H */
 #ifdef DECLARE_INSN
+/* CX */
+DECLARE_INSN(cx_imm, MATCH_CX_IMM, MASK_CX_IMM)
+DECLARE_INSN(cx_reg, MATCH_CX_REG, MASK_CX_REG)
+/* CX end */
 DECLARE_INSN(slli_rv32, MATCH_SLLI_RV32, MASK_SLLI_RV32)
 DECLARE_INSN(srli_rv32, MATCH_SRLI_RV32, MASK_SRLI_RV32)
 DECLARE_INSN(srai_rv32, MATCH_SRAI_RV32, MASK_SRAI_RV32)

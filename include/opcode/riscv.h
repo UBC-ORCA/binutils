@@ -108,6 +108,14 @@ static inline unsigned int riscv_insn_length (insn_t insn)
   (RV_X(x, 20, 10))
 #define EXTRACT_RVV_VC_IMM(x) \
   (RV_X(x, 20, 11))
+/* CX */
+#define EXTRACT_CX_RTYPE_CFID(x) \
+  (RV_X(x, 12, 3) | (RV_X(x, 25, 7) << 3))
+#define EXTRACT_CX_ITYPE_CFID(x) \
+  (RV_X(x, 20, 4))
+#define EXTRACT_CX_ITYPE_IMM(x) \
+  (RV_X(x, 24, 8) | (RV_IMM_SIGN(x) << 8))
+/* end CX */
 #define EXTRACT_ZCB_BYTE_UIMM(x) \
   (RV_X(x, 6, 1) | (RV_X(x, 5, 1) << 1))
 #define EXTRACT_ZCB_HALFWORD_UIMM(x) \
@@ -164,6 +172,14 @@ static inline unsigned int riscv_insn_length (insn_t insn)
   (RV_X(x, 0, 11) << 20)
 #define ENCODE_RVV_VI_UIMM6(x) \
   (RV_X(x, 0, 5) << 15 | RV_X(x, 5, 1) << 26)
+/* CX */
+#define ENCODE_CX_RTYPE_CFID(x) \
+  ((RV_X(x, 0, 3) << 12) | (RV_X(x, 3, 7) << 25))
+#define ENCODE_CX_ITYPE_CFID(x) \
+  (RV_X(x, 0, 4) << 20)
+#define ENCODE_CX_ITYPE_IMM(x) \
+  (RV_X(x, 0, 8) << 24)
+/* end CX */
 #define ENCODE_ZCB_BYTE_UIMM(x) \
   ((RV_X(x, 0, 1) << 6) | (RV_X(x, 1, 1) << 5))
 #define ENCODE_ZCB_HALFWORD_UIMM(x) \

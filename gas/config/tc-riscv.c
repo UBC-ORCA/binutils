@@ -1366,6 +1366,18 @@ validate_riscv_insn (const struct riscv_opcode *opc, int length)
 	      goto unknown_validate_operand;
 	    }
 	  break; /* end RVV */
+
+  case 'G': /* CX */ // FIXME
+	  switch (*++oparg)
+	    {
+	    case 'x': used_bits |= ENCODE_CX_RTYPE_CFID (-1U); break;
+	    case 'y': used_bits |= ENCODE_CX_ITYPE_CFID (-1U); break;
+	    case 'j': used_bits |= ENCODE_CX_ITYPE_IMM  (-1U); break;
+	    default:
+	      goto unknown_validate_operand;
+	    }
+	break; /* end CX */
+
 	case ',': break;
 	case '(': break;
 	case ')': break;
@@ -3190,7 +3202,52 @@ riscv_ip (char *str, struct riscv_cl_insn *ip, expressionS *imm_expr,
 		  goto unknown_riscv_ip_operand;
 		}
 	      break; /* end RVV */
+    case 'G': /* CX */ // FIXME
+      switch (*++oparg)
+		{
+		case 'x':
+		  my_getExpression (imm_expr, asarg);
+		  check_absolute_expr (ip, imm_expr, FALSE);
+		  if (imm_expr->X_add_number < 0
+		      || imm_expr->X_add_number >= 1024)
+		    as_bad (_("bad value for custom function identifier field, "
+			      "value must be 0...1023"));
+		  ip->insn_opcode
+		    |= ENCODE_CX_RTYPE_CFID (imm_expr->X_add_number);
+		  imm_expr->X_op = O_absent;
+		  asarg = expr_parse_end;
+		  continue;
 
+		case 'y':
+		  my_getExpression (imm_expr, asarg);
+		  check_absolute_expr (ip, imm_expr, FALSE);
+		  if (imm_expr->X_add_number < 0
+		      || imm_expr->X_add_number >= 16)
+		    as_bad (_("bad value for custom function identifier field, "
+			      "value must be 0...15"));
+		  ip->insn_opcode
+		    |= ENCODE_CX_ITYPE_CFID (imm_expr->X_add_number);
+		  imm_expr->X_op = O_absent;
+		  asarg = expr_parse_end;
+		  continue;
+
+		case 'j':
+		  my_getExpression (imm_expr, asarg);
+		  check_absolute_expr (ip, imm_expr, FALSE);
+		  if (imm_expr->X_add_number > 127
+		      || imm_expr->X_add_number < -128)
+		    as_bad (_("bad value for custom function identifier field, "
+			      "value must be -127...128"));
+		  ip->insn_opcode
+		    |= ENCODE_CX_ITYPE_IMM (imm_expr->X_add_number);
+		  imm_expr->X_op = O_absent;
+		  asarg = expr_parse_end;
+		  continue;
+
+		default:
+		  goto unknown_riscv_ip_operand;
+		}
+	  break; /* end CX */
 	    case ',':
 	      if (*asarg++ == *oparg)
 		continue;
